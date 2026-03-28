@@ -27,10 +27,8 @@ export class LoginPage extends BasePage {
   async login(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
-    await Promise.all([
-      this.page.waitForURL(`**${env.dashboardPath}`),
-      this.submitButton.click()
-    ]);
+    await this.submitButton.click();
+    await this.waitForPathname(env.dashboardPath);
   }
 
   async loginExpectingFailure(email: string, password: string): Promise<void> {

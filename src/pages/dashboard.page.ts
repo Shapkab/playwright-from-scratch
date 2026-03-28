@@ -29,9 +29,7 @@ export class DashboardPage extends BasePage {
 
   async logout(): Promise<void> {
     await this.userMenuTrigger.click();
-    await Promise.all([
-      this.page.waitForURL(`**${env.loginPath}`),
-      this.logoutButton.click()
-    ]);
+    await this.logoutButton.click();
+    await this.waitForPathname(env.loginPath);
   }
 }
