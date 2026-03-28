@@ -1,4 +1,3 @@
-import { env } from '@config/env';
 import { test, expect } from '@fixtures/test';
 import { DashboardPage } from '@pages/dashboard.page';
 
@@ -8,10 +7,19 @@ test.describe('UI and API consistency', () => {
     const uiEmail = await dashboardPage.readSignedInUserEmail();
 
     const response = await authApi.getCurrentUser();
-    const body = (await response.json()) as { email?: string };
+    const body = (await response.json()) as unknown;
 
-    expect(uiEmail).toBeTruthy();
-    expect(body.email, 'Expected profile response to include email field. Adjust mapping if your contract differs.').toBeTruthy();
-    expect(uiEmail).toContain(body.email ?? env.userEmail);
+    const isObject = typeof body === 'object' && body !== null;
+    expect(isObject, 'Expected profile response to be a JSON object.').toBeTruthy();
+
+    const email = isObject ? (body as Record<string, unknown>).email : undefined;
+    expect(typeof email, 'Expected profile response contract: { email: string }.').toBe('string');
+
+    const normalizedUiEmail = uiEmail.trim().toLowerCase();
+    const normalizedApiEmail = (email as string).trim().toLowerCase();
+
+    expect(normalizedUiEmail).toBeTruthy();
+    expect(normalizedApiEmail).toBeTruthy();
+    expect(normalizedUiEmail).toBe(normalizedApiEmail);
   });
 });
