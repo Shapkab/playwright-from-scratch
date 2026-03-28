@@ -1,4 +1,4 @@
-# Mature Playwright SDET Template
+# Playwright SDET Template
 
 **Focused on deterministic, maintainable, and CI-safe test architecture.**
 
@@ -92,6 +92,7 @@ Confirms the application health endpoint responds successfully.
 
 ### CI safety
 - Retries enabled only in CI
+- Type-check (`npm run lint:types`) runs before test execution in CI
 - Trace/video/screenshots retained on failure
 - Single browser project by default to reduce noise in template usage
 
@@ -151,6 +152,7 @@ Avoid brittle CSS chains and text-fragment locators.
 ## Commands
 
 ```bash
+npm run lint:types
 npm test
 npm run test:smoke
 npm run test:api
@@ -162,7 +164,7 @@ npm run report
 ## Notes on adaptation
 
 - If your app uses token auth instead of cookie/session auth, adapt `authApi` fixture accordingly.
-- If your profile endpoint returns a different shape than `{ email: string }`, update the mapping in `profile-ui-api.spec.ts`.
+- The `profile-ui-api.spec.ts` test enforces a strict profile contract: `{ email: string }` and exact UI/API email equality (case-insensitive). If your API differs, adapt that test's mapping/assertions.
 - If your dashboard is not the first post-login page, update `DASHBOARD_PATH` and related readiness checks.
 
 ## Why this template is intentionally narrow
