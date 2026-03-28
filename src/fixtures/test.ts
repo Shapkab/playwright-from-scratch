@@ -9,6 +9,7 @@ type Fixtures = {
   dashboardPage: DashboardPage;
   authPage: Page;
   authContext: BrowserContext;
+  authenticatedStorageState: Awaited<ReturnType<BrowserContext['storageState']>>;
   appApi: AppApi;
   authApi: AppApi;
 };
@@ -42,7 +43,11 @@ export const test = base.extend<Fixtures>({
     await page.close();
   },
 
-  appApi: async ({ playwright }, use) => {
+  authenticatedStorageState: async ({ authPage: _authPage, authContext }, use) => {
+    await use(await authContext.storageState());
+  },
+
+  appApi: async ({}, use) => {
     const apiContext = await request.newContext({
       baseURL: env.apiBaseUrl,
       ignoreHTTPSErrors: true
@@ -51,11 +56,10 @@ export const test = base.extend<Fixtures>({
     await apiContext.dispose();
   },
 
-  authApi: async ({ playwright, authContext }, use) => {
-    const storageState = await authContext.storageState();
+  authApi: async ({ authenticatedStorageState }, use) => {
     const apiContext: APIRequestContext = await request.newContext({
       baseURL: env.apiBaseUrl,
-      storageState,
+      storageState: authenticatedStorageState,
       ignoreHTTPSErrors: true
     });
     await use(new AppApi(apiContext));
