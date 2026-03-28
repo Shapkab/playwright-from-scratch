@@ -1,0 +1,21 @@
+{
+  "name": "playwright-sdet-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic, maintainable, and CI-safe Playwright TypeScript template for common authenticated web flows.",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:api": "playwright test tests/api",
+    "test:ui": "playwright test tests/auth",
+    "report": "playwright show-report",
+    "lint:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^22.10.1",
+    "dotenv": "^16.4.7",
+    "typescript": "^5.7.2"
+  }
+}
